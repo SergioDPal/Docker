@@ -1,0 +1,27 @@
+version: "3"
+
+networks:
+  network:
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5050:5000"
+    volumes:
+      - .:/app
+    environment:
+      - GREETINGS=Hello Rubiko Tech!
+
+  curl:
+    depends_on:
+      - web
+    image: curlimages/curl
+    command:
+      [
+        "sh",
+        "-c",
+        "until curl -s http://web:5000/health; do echo 'Waiting for web service...'; sleep 2; done",
+      ]
